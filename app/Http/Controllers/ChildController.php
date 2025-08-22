@@ -1,0 +1,79 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Http\Request;
+use App\Models\Child;
+use App\Models\User;
+class ChildController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index()
+    {
+        $children = Child::with('user')->latest()->paginate(10);
+        return view('children.index', compact('children'));
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     */
+    public function create()
+    {
+        $users = User::all();
+        return view('children.create', compact('users'));
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'gender' => 'required|in:male,female',
+            'date_of_birth' => 'required|date',
+        ]);
+
+        Child::create($request->all());
+        return redirect()->route('children.index')->with('success', 'Data anak berhasil ditambahkan.');
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(Child $child)
+    {
+        return view('children.show', compact('child'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
+    public function edit(Child $child)
+    {
+        $users = User::all();
+        return view('children.edit', compact('child', 'users'));
+    }
+
+    public function update(Request $request, Child $child)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id',
+            'name' => 'required|string|max:255',
+            'gender' => 'required|in:male,female',
+            'date_of_birth' => 'required|date',
+        ]);
+
+        $child->update($request->all());
+        return redirect()->route('children.index')->with('success', 'Data anak berhasil diperbarui.');
+    }
+
+    public function destroy(Child $child)
+    {
+        $child->delete();
+        return redirect()->route('children.index')->with('success', 'Data anak berhasil dihapus.');
+    }
+}
