@@ -2,63 +2,75 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KpspSkrining;
+use App\Models\Child;
+use App\Models\KpspSetPertanyaan;
 use Illuminate\Http\Request;
 
 class KpspSkriningController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $skrining = KpspSkrining::with(['anak', 'set'])
+            ->orderBy('tanggal_skrining', 'desc')
+            ->paginate(10);
+
+        return view('kpsp_skrining.index', compact('skrining'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $children = Child::orderBy('name')->get();
+        $sets = KpspSetPertanyaan::orderBy('usia_dalam_bulan')->get();
+
+        return view('kpsp_skrining.create', compact('children', 'sets'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'id_anak' => 'required|exists:children,id',
+            'id_set_kpsp' => 'required|exists:kpsp_set_pertanyaan,id',
+            'tanggal_skrining' => 'required|date',
+            'skor_mentah' => 'required|integer',
+            'hasil_interpretasi' => 'required|string|max:50',
+            'rekomendasi' => 'nullable|string',
+            'catatan' => 'nullable|string',
+        ]);
+
+        KpspSkrining::create($request->all());
+
+        return redirect()->route('kpsp-skrining.index')->with('success', 'Skrining berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(KpspSkrining $kpsp_skrining)
     {
-        //
+        $children = Child::orderBy('name')->get();
+        $sets = KpspSetPertanyaan::orderBy('usia_dalam_bulan')->get();
+
+        return view('kpsp_skrining.edit', compact('kpsp_skrining', 'children', 'sets'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, KpspSkrining $kpsp_skrining)
     {
-        //
+        $request->validate([
+            'id_anak' => 'required|exists:children,id',
+            'id_set_kpsp' => 'required|exists:kpsp_set_pertanyaan,id',
+            'tanggal_skrining' => 'required|date',
+            'skor_mentah' => 'required|integer',
+            'hasil_interpretasi' => 'required|string|max:50',
+            'rekomendasi' => 'nullable|string',
+            'catatan' => 'nullable|string',
+        ]);
+
+        $kpsp_skrining->update($request->all());
+
+        return redirect()->route('kpsp-skrining.index')->with('success', 'Skrining berhasil diperbarui');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(KpspSkrining $kpsp_skrining)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $kpsp_skrining->delete();
+        return redirect()->route('kpsp-skrining.index')->with('success', 'Skrining berhasil dihapus');
     }
 }

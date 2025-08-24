@@ -2,63 +2,67 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\KpspJawaban;
+use App\Models\KpspSkrining;
+use App\Models\KpspPertanyaan;
 use Illuminate\Http\Request;
 
 class KpspJawabanController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $jawaban = KpspJawaban::with(['skrining.anak', 'pertanyaan.set'])
+            ->orderBy('id_skrining')
+            ->paginate(15);
+
+        return view('kpsp_jawaban.index', compact('jawaban'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
-        //
+        $skrining = KpspSkrining::with('anak')->orderBy('tanggal_skrining', 'desc')->get();
+        $pertanyaan = KpspPertanyaan::with('set')->orderBy('id_set_kpsp')->orderBy('nomor_urut')->get();
+
+        return view('kpsp_jawaban.create', compact('skrining', 'pertanyaan'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'id_skrining' => 'required|exists:kpsp_skrining,id',
+            'id_pertanyaan' => 'required|exists:kpsp_pertanyaan,id',
+            'jawaban' => 'required|boolean',
+        ]);
+
+        KpspJawaban::create($request->all());
+
+        return redirect()->route('kpsp-jawaban.index')->with('success', 'Jawaban berhasil ditambahkan');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function edit(KpspJawaban $kpsp_jawaban)
     {
-        //
+        $skrining = KpspSkrining::with('anak')->get();
+        $pertanyaan = KpspPertanyaan::with('set')->get();
+
+        return view('kpsp_jawaban.edit', compact('kpsp_jawaban', 'skrining', 'pertanyaan'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    public function update(Request $request, KpspJawaban $kpsp_jawaban)
     {
-        //
+        $request->validate([
+            'id_skrining' => 'required|exists:kpsp_skrining,id',
+            'id_pertanyaan' => 'required|exists:kpsp_pertanyaan,id',
+            'jawaban' => 'required|boolean',
+        ]);
+
+        $kpsp_jawaban->update($request->all());
+
+        return redirect()->route('kpsp-jawaban.index')->with('success', 'Jawaban berhasil diperbarui');
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
+    public function destroy(KpspJawaban $kpsp_jawaban)
     {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+        $kpsp_jawaban->delete();
+        return redirect()->route('kpsp-jawaban.index')->with('success', 'Jawaban berhasil dihapus');
     }
 }

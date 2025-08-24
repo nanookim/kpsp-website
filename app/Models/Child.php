@@ -24,4 +24,9 @@ class Child extends Model
     {
         return $this->belongsTo(User::class, 'id_user');
     }
+    public function children()
+    {
+        return $this->hasMany(\App\Models\Child::class, 'id_user'); // tambahkan foreign key
+    }
+
 }

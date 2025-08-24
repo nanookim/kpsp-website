@@ -34,11 +34,20 @@
 </head>
 <body>
 <div class="sidebar">
-    <h4 class="p-3">ProCRUD</h4>
-    <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">Users</a>
-    <a href="{{ route('children.index') }}" class="{{ request()->is('children*') ? 'active' : '' }}">Children</a>
-    <a href="#">Settings</a>
+    <h4 class="p-3">KPSP Admin</h4>
+    <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">👤 Users</a>
+    <a href="{{ route('children.index') }}" class="{{ request()->is('children*') ? 'active' : '' }}">👶 Children</a>
+    <a href="{{ route('kpsp-set.index') }}" class="{{ request()->is('kpsp-set*') ? 'active' : '' }}">📂 Set Pertanyaan</a>
+    <a href="{{ route('kpsp-pertanyaan.index') }}" class="{{ request()->is('kpsp-pertanyaan*') ? 'active' : '' }}">❓ Pertanyaan</a>
+    <a href="{{ route('kpsp-skrining.index') }}" class="{{ request()->is('kpsp-skrining*') ? 'active' : '' }}">🩺 Skrining</a>
+    <a href="{{ route('kpsp-jawaban.index') }}" class="{{ request()->is('kpsp-jawaban*') ? 'active' : '' }}">✅ Jawaban</a>
+
+        <a href="{{ route('kpsp.index') }}"
+           class="nav-link {{ request()->routeIs('kpsp.*') ? 'active' : '' }}">
+            <i class="bi bi-question-circle"></i> KPSP
+        </a>
 </div>
+
 
 <div class="content">
     <nav class="navbar navbar-light bg-light mb-3 shadow-sm">
