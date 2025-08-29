@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ChildApiController;
+use App\Http\Controllers\Api\SetPertanyaanApiController;
 
 Route::get('/ping', fn () => response()->json(['message' => 'API OK']));
 
@@ -17,3 +18,8 @@ Route::middleware('auth:sanctum')->group(function () {
     // Children routes
     Route::apiResource('children', ChildApiController::class);
 });
+Route::apiResource('set-pertanyaan', SetPertanyaanApiController::class);
+Route::get('/set-pertanyaan/{id}/pertanyaan', [SetPertanyaanApiController::class, 'pertanyaan']);
+Route::post('/set-pertanyaan/{id_set}/jawaban', [SetPertanyaanApiController::class, 'submitJawaban']);
+
+

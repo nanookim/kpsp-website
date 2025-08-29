@@ -25,13 +25,7 @@
                     <td>{{ $j->skrining->tanggal_skrining->format('d-m-Y') }}</td>
                     <td>{{ $j->skrining->anak->name }}</td>
                     <td>[{{ $j->pertanyaan->set->usia_dalam_bulan }} bln] {{ $j->pertanyaan->nomor_urut }}. {{ $j->pertanyaan->teks_pertanyaan }}</td>
-                    <td>
-                        @if($j->jawaban)
-                            <span class="badge bg-success">Ya</span>
-                        @else
-                            <span class="badge bg-danger">Tidak</span>
-                        @endif
-                    </td>
+                    <td>{{ $j->jawaban}}</td>
                     <td>
                         <a href="{{ route('kpsp-jawaban.edit', $j->id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('kpsp-jawaban.destroy', $j->id) }}" method="POST" style="display:inline">

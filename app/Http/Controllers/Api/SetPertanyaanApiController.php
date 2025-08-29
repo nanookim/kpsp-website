@@ -1,0 +1,247 @@
+<?php
+
+namespace App\Http\Controllers\Api;
+
+use App\Http\Controllers\Controller;
+use App\Imports\KpspSetPertanyaanImport;
+use App\Models\KpspJawaban;
+use App\Models\KpspPertanyaan;
+use App\Models\KpspSetPertanyaan;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
+
+class SetPertanyaanApiController extends Controller
+{
+    public function index()
+    {
+        $sets = KpspSetPertanyaan::orderBy('usia_dalam_bulan')->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Daftar set pertanyaan',
+            'data' => $sets
+        ]);
+    }
+    public function show($id_set)
+    {
+        $idAnak = 1; // sementara hardcode
+
+        $set = KpspSetPertanyaan::findOrFail($id_set);
+
+        // ambil pertanyaan sesuai set
+        $pertanyaan = KpspPertanyaan::where('id_set_kpsp', $id_set)
+            ->orderBy('nomor_urut')
+            ->get();
+
+        // optional: ambil skrining terakhir anak
+        $skrining = \App\Models\KpspSkrining::where('id_set_kpsp', $id_set)
+            ->where('id_anak', $idAnak)
+            ->latest('tanggal_skrining')
+            ->with('jawaban.pertanyaan')
+            ->first();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail set pertanyaan',
+            'data' => [
+                'set' => $set,
+                'pertanyaan' => $pertanyaan,
+                'skrining_terakhir' => $skrining,
+            ],
+        ]);
+    }
+
+
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'usia_dalam_bulan' => 'required|integer|unique:kpsp_set_pertanyaan,usia_dalam_bulan',
+            'deskripsi' => 'nullable|string',
+            'jumlah_pertanyaan' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $set = KpspSetPertanyaan::create($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Set pertanyaan berhasil ditambahkan',
+            'data' => $set
+        ]);
+    }
+
+    public function update(Request $request, KpspSetPertanyaan $kpsp_set)
+    {
+        $validator = Validator::make($request->all(), [
+            'usia_dalam_bulan' => 'required|integer|unique:kpsp_set_pertanyaan,usia_dalam_bulan,' . $kpsp_set->id,
+            'deskripsi' => 'nullable|string',
+            'jumlah_pertanyaan' => 'required|integer',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        $kpsp_set->update($request->all());
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Set pertanyaan berhasil diperbarui',
+            'data' => $kpsp_set
+        ]);
+    }
+
+    public function destroy(KpspSetPertanyaan $kpsp_set)
+    {
+        $kpsp_set->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Set pertanyaan berhasil dihapus'
+        ]);
+    }
+
+    public function import(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'file' => 'required|mimes:xlsx,xls,csv'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Validasi gagal',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        Excel::import(new KpspSetPertanyaanImport(), $request->file('file'));
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data set pertanyaan berhasil diimport'
+        ]);
+    }
+
+    private function interpretasi($skor)
+    {
+        if ($skor >= 9) {
+            return 'Sesuai';
+        } elseif ($skor >= 7) {
+            return 'Meragukan';
+        } else {
+            return 'Penyimpangan';
+        }
+    }
+
+    private function kesimpulan($skor, $detailTidak)
+    {
+        $hasil = $this->interpretasi($skor);
+
+        // cari domain mana yang paling bermasalah
+        $max = max($detailTidak);
+        $domainBermasalah = [];
+        if ($max > 0) {
+            $domainBermasalah = array_keys($detailTidak, $max);
+        }
+
+        $kesimpulan = "Perkembangan anak: {$hasil}. ";
+
+        if ($hasil === 'Sesuai') {
+            $kesimpulan .= "Tidak ada keterlambatan yang menonjol.";
+        } elseif ($hasil === 'Meragukan') {
+            $kesimpulan .= "Perlu pemantauan ulang dalam 1–2 minggu. ";
+            if (!empty($domainBermasalah)) {
+                $kesimpulan .= "Bidang yang perlu diperhatikan: " . implode(', ', $domainBermasalah) . ".";
+            }
+        } else { // Penyimpangan
+            $kesimpulan .= "Ditemukan kemungkinan penyimpangan perkembangan. ";
+            if (!empty($domainBermasalah)) {
+                $kesimpulan .= "Bidang dengan hambatan: " . implode(', ', $domainBermasalah) . ".";
+            }
+            $kesimpulan .= " Disarankan rujukan untuk pemeriksaan lebih lanjut.";
+        }
+
+        return $kesimpulan;
+    }
+
+    public function submitJawaban(Request $request, $id_set, $id_anak)
+    {
+//        $idAnak = 1; // sementara hardcode
+
+        $request->validate([
+            'jawaban' => 'required|array',
+            'jawaban.*' => 'required|in:ya,tidak',
+        ]);
+
+        // buat skrining baru
+        $skrining = \App\Models\KpspSkrining::create([
+            'id_set_kpsp' => $id_set,
+            'id_anak' => $id_anak,
+            'tanggal_skrining' => now(),
+            'skor_mentah' => 0,
+            'user_id' => auth()->id() ?? null,
+            'hasil_interpretasi' => 'Belum dihitung',
+            'tanggal' => now(),
+        ]);
+
+        $skor = 0;
+
+        // inisialisasi counter per domain
+        $detailTidak = [
+            'gerak_kasar' => 0,
+            'gerak_halus' => 0,
+            'bicara_bahasa' => 0,
+            'sosialisasi_kemandirian' => 0,
+        ];
+
+        foreach ($request->jawaban as $idPertanyaan => $jawaban) {
+            $pertanyaan = KpspPertanyaan::find($idPertanyaan);
+
+            if ($jawaban === 'ya') {
+                $skor++;
+            } else {
+                if ($pertanyaan && array_key_exists($pertanyaan->domain_perkembangan, $detailTidak)) {
+                    $detailTidak[$pertanyaan->domain_perkembangan]++;
+                }
+
+            }
+
+            KpspJawaban::create([
+                'id_skrining' => $skrining->id,
+                'id_pertanyaan' => $idPertanyaan,
+                'jawaban' => $jawaban,
+            ]);
+        }
+
+        $hasil = $this->interpretasi($skor);
+        $kesimpulan = $this->kesimpulan($skor, $detailTidak);
+
+        $skrining->update([
+            'skor_mentah' => $skor,
+            'hasil_interpretasi' => $hasil,
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Jawaban berhasil disimpan',
+            'data' => [
+                'skrining' => $skrining,
+                'detail_tidak' => $detailTidak,
+                'kesimpulan' => $kesimpulan,
+            ],
+        ]);
+    }
+}
