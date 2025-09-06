@@ -21,5 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::apiResource('set-pertanyaan', SetPertanyaanApiController::class);
 Route::get('/set-pertanyaan/{id}/pertanyaan', [SetPertanyaanApiController::class, 'pertanyaan']);
 Route::post('/set-pertanyaan/{id_set}/jawaban', [SetPertanyaanApiController::class, 'submitJawaban']);
+Route::get('/set-pertanyaan/riwayat/{id_anak}', [SetPertanyaanApiController::class, 'riwayat']);
+
 
 

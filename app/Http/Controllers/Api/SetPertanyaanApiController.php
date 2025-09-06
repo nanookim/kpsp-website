@@ -270,4 +270,49 @@ class SetPertanyaanApiController extends Controller
             ],
         ]);
     }
+
+    public function riwayat($id_anak)
+    {
+        $skrining = \App\Models\KpspSkrining::where('id_anak', $id_anak)
+            ->orderBy('tanggal_skrining', 'desc')
+            ->with(['set', 'jawaban.pertanyaan'])
+            ->get()
+            ->map(function ($s) {
+                $detailTidak = [
+                    'gerak_kasar' => 0,
+                    'gerak_halus' => 0,
+                    'bicara_bahasa' => 0,
+                    'sosialisasi_kemandirian' => 0,
+                ];
+
+                foreach ($s->jawaban as $j) {
+                    if ($j->jawaban === 'tidak' && $j->pertanyaan) {
+                        $domain = $j->pertanyaan->domain_perkembangan;
+                        if (array_key_exists($domain, $detailTidak)) {
+                            $detailTidak[$domain]++;
+                        }
+                    }
+                }
+
+                $kesimpulan = $this->kesimpulan($s->skor_mentah, $detailTidak);
+
+                return [
+                    'id' => $s->id,
+                    'tanggal_skrining'   => $s->tanggal_skrining,   // ✅ konsisten
+                    'usia_set'           => $s->set->usia_dalam_bulan ?? null,
+                    'deskripsi_set'      => $s->set->deskripsi ?? null,
+                    'skor_mentah'        => $s->skor_mentah,        // ✅ konsisten
+                    'hasil_interpretasi' => $s->hasil_interpretasi, // ✅ konsisten
+                    'kesimpulan'         => $kesimpulan,
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Riwayat skrining anak',
+            'data' => $skrining,
+        ]);
+    }
+
+
 }
