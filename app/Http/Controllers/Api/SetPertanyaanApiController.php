@@ -13,16 +13,39 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class SetPertanyaanApiController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $sets = KpspSetPertanyaan::orderBy('usia_dalam_bulan')->get();
+        $idAnak = $request->get('id_anak');
+        if (!$idAnak) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Anak belum dipilih'
+            ], 400);
+        }
+        $sets = KpspSetPertanyaan::orderBy('usia_dalam_bulan')
+            ->get()
+            ->map(function ($set) use ($idAnak) {
+                $skrining = \App\Models\KpspSkrining::where('id_set_kpsp', $set->id)
+                    ->where('id_anak', $idAnak)
+                    ->latest('tanggal_skrining')
+                    ->first();
+
+                return [
+                    'id' => $set->id,
+                    'usia_dalam_bulan' => $set->usia_dalam_bulan,
+                    'deskripsi' => $set->deskripsi,
+                    'jumlah_pertanyaan' => $set->jumlah_pertanyaan,
+                    'skrining_terakhir' => $skrining ? $skrining->tanggal_skrining : null,
+                ];
+            });
 
         return response()->json([
             'success' => true,
             'message' => 'Daftar set pertanyaan',
-            'data' => $sets
+            'data' => $sets,
         ]);
     }
+
     public function show($id_set)
     {
         $idAnak = 1; // sementara hardcode
@@ -177,9 +200,9 @@ class SetPertanyaanApiController extends Controller
         return $kesimpulan;
     }
 
-    public function submitJawaban(Request $request, $id_set, $id_anak)
+    public function submitJawaban(Request $request, $id_set)
     {
-//        $idAnak = 1; // sementara hardcode
+        $id_anak = $request->input('id_anak');
 
         $request->validate([
             'jawaban' => 'required|array',
@@ -241,6 +264,9 @@ class SetPertanyaanApiController extends Controller
                 'skrining' => $skrining,
                 'detail_tidak' => $detailTidak,
                 'kesimpulan' => $kesimpulan,
+                'interpretasi' => $hasil,
+                'skor' => $skor,
+                'rekomendasi' => $kesimpulan,
             ],
         ]);
     }
