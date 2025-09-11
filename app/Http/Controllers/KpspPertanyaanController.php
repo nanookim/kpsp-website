@@ -7,7 +7,9 @@ use App\Models\KpspPertanyaan;
 use App\Models\KpspSetPertanyaan;
 use Illuminate\Http\Request;
 use App\Imports\KpspPertanyaanImport;
+use Illuminate\Support\Facades\Storage;
 use Maatwebsite\Excel\Facades\Excel;
+
 class KpspPertanyaanController extends Controller
 {
     public function index()
@@ -32,7 +34,6 @@ class KpspPertanyaanController extends Controller
             'url_ilustrasi' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        // ambil data text dulu
         $data = $request->only([
             'id_set_kpsp',
             'nomor_urut',
@@ -40,7 +41,6 @@ class KpspPertanyaanController extends Controller
             'domain_perkembangan',
         ]);
 
-        // kalau ada file ilustrasi
         if ($request->hasFile('url_ilustrasi')) {
             $path = $request->file('url_ilustrasi')->store('ilustrasi', 'public');
             $data['url_ilustrasi'] = $path;
@@ -50,7 +50,6 @@ class KpspPertanyaanController extends Controller
 
         return redirect()->route('kpsp-pertanyaan.index')->with('success', 'Pertanyaan berhasil ditambahkan');
     }
-
 
     public function edit(KpspPertanyaan $kpsp_pertanyaan)
     {
@@ -75,8 +74,17 @@ class KpspPertanyaanController extends Controller
             'domain_perkembangan',
         ]);
 
-        // kalau ada file baru
+        // Hapus ilustrasi lama jika checkbox dicentang
+        if ($request->has('hapus_ilustrasi') && $kpsp_pertanyaan->url_ilustrasi) {
+            Storage::delete('public/' . $kpsp_pertanyaan->url_ilustrasi);
+            $kpsp_pertanyaan->url_ilustrasi = null;
+        }
+
+        // Upload ilustrasi baru jika ada
         if ($request->hasFile('url_ilustrasi')) {
+            if ($kpsp_pertanyaan->url_ilustrasi) {
+                Storage::delete('public/' . $kpsp_pertanyaan->url_ilustrasi);
+            }
             $path = $request->file('url_ilustrasi')->store('ilustrasi', 'public');
             $data['url_ilustrasi'] = $path;
         }
@@ -86,9 +94,12 @@ class KpspPertanyaanController extends Controller
         return redirect()->route('kpsp-pertanyaan.index')->with('success', 'Pertanyaan berhasil diperbarui');
     }
 
-
     public function destroy(KpspPertanyaan $kpsp_pertanyaan)
     {
+        if ($kpsp_pertanyaan->url_ilustrasi) {
+            Storage::delete('public/' . $kpsp_pertanyaan->url_ilustrasi);
+        }
+
         $kpsp_pertanyaan->delete();
         return redirect()->route('kpsp-pertanyaan.index')->with('success', 'Pertanyaan berhasil dihapus');
     }
@@ -96,9 +107,7 @@ class KpspPertanyaanController extends Controller
     public function import(Request $request)
     {
         $request->validate(['file' => 'required|mimes:xlsx,xls']);
-
         Excel::import(new KpspPertanyaanImport, $request->file('file'));
-
         return redirect()->back()->with('success', 'Pertanyaan berhasil diimport!');
     }
 

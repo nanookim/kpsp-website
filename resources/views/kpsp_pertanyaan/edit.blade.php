@@ -36,7 +36,15 @@
                     <p class="mt-2">Ilustrasi saat ini:</p>
                     <img src="{{ asset('storage/' . $kpsp_pertanyaan->url_ilustrasi) }}"
                          alt="Ilustrasi" width="150" class="img-thumbnail">
+
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" name="hapus_ilustrasi" id="hapus_ilustrasi">
+                        <label class="form-check-label" for="hapus_ilustrasi">
+                            Hapus ilustrasi
+                        </label>
+                    </div>
                 @endif
+
             </div>
             <button class="btn btn-success">Update</button>
         </form>
