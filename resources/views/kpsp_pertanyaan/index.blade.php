@@ -42,11 +42,12 @@
                     <td>{{ $q->domain_perkembangan ?? '-' }}</td>
                     <td>
                         @if($q->url_ilustrasi)
-                            <a href="{{ $q->url_ilustrasi }}" target="_blank">Lihat</a>
+                            <img src="{{ asset('storage/' . $q->url_ilustrasi) }}" alt="Ilustrasi" width="80">
                         @else
                             -
                         @endif
                     </td>
+
                     <td>
                         <a href="{{ route('kpsp-pertanyaan.edit', $q->id) }}" class="btn btn-warning btn-sm">Edit</a>
                         <form action="{{ route('kpsp-pertanyaan.destroy', $q->id) }}" method="POST" style="display:inline">

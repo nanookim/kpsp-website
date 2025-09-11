@@ -3,7 +3,7 @@
 @section('content')
     <div class="container">
         <h2>Tambah Pertanyaan</h2>
-        <form action="{{ route('kpsp-pertanyaan.store') }}" method="POST">
+        <form action="{{ route('kpsp-pertanyaan.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label>Set Pertanyaan (Usia)</label>
@@ -26,8 +26,8 @@
                 <input type="text" name="domain_perkembangan" class="form-control">
             </div>
             <div class="mb-3">
-                <label>URL Ilustrasi</label>
-                <input type="text" name="url_ilustrasi" class="form-control">
+                <label>Upload Ilustrasi</label>
+                <input type="file" name="url_ilustrasi" class="form-control"> {{-- ✅ ganti jadi file --}}
             </div>
             <button class="btn btn-success">Simpan</button>
         </form>

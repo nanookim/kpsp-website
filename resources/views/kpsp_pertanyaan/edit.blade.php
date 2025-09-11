@@ -3,8 +3,9 @@
 @section('content')
     <div class="container">
         <h2>Edit Pertanyaan</h2>
-        <form action="{{ route('kpsp-pertanyaan.update', $kpsp_pertanyaan->id) }}" method="POST">
-            @csrf @method('PUT')
+        <form action="{{ route('kpsp-pertanyaan.update', $kpsp_pertanyaan->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf
+            @method('PUT')
             <div class="mb-3">
                 <label>Set Pertanyaan (Usia)</label>
                 <select name="id_set_kpsp" class="form-control" required>
@@ -28,8 +29,14 @@
                 <input type="text" name="domain_perkembangan" class="form-control" value="{{ $kpsp_pertanyaan->domain_perkembangan }}">
             </div>
             <div class="mb-3">
-                <label>URL Ilustrasi</label>
-                <input type="text" name="url_ilustrasi" class="form-control" value="{{ $kpsp_pertanyaan->url_ilustrasi }}">
+                <label>Upload Ilustrasi</label>
+                <input type="file" name="url_ilustrasi" class="form-control">
+
+                @if($kpsp_pertanyaan->url_ilustrasi)
+                    <p class="mt-2">Ilustrasi saat ini:</p>
+                    <img src="{{ asset('storage/' . $kpsp_pertanyaan->url_ilustrasi) }}"
+                         alt="Ilustrasi" width="150" class="img-thumbnail">
+                @endif
             </div>
             <button class="btn btn-success">Update</button>
         </form>

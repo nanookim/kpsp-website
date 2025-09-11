@@ -34,6 +34,7 @@ class SetPertanyaanApiController extends Controller
                     'id' => $set->id,
                     'usia_dalam_bulan' => $set->usia_dalam_bulan,
                     'deskripsi' => $set->deskripsi,
+                    'url_ilustrasi' => $set->url_ilustrasi,
                     'jumlah_pertanyaan' => $set->jumlah_pertanyaan,
                     'skrining_terakhir' => $skrining ? $skrining->tanggal_skrining : null,
                 ];
@@ -53,9 +54,19 @@ class SetPertanyaanApiController extends Controller
         $set = KpspSetPertanyaan::findOrFail($id_set);
 
         // ambil pertanyaan sesuai set
+        // ambil pertanyaan sesuai set
         $pertanyaan = KpspPertanyaan::where('id_set_kpsp', $id_set)
             ->orderBy('nomor_urut')
-            ->get();
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'id' => $p->id,
+                    'nomor_urut' => $p->nomor_urut,
+                    'teks' => $p->teks,
+                    'domain_perkembangan' => $p->domain_perkembangan,
+                    'url_ilustrasi' => $p->url_ilustrasi, // ⬅️ tambahkan ini
+                ];
+            });
 
         // optional: ambil skrining terakhir anak
         $skrining = \App\Models\KpspSkrining::where('id_set_kpsp', $id_set)

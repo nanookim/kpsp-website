@@ -29,13 +29,28 @@ class KpspPertanyaanController extends Controller
             'teks_pertanyaan' => 'required|string',
             'nomor_urut' => 'required|integer',
             'domain_perkembangan' => 'nullable|string|max:50',
-            'url_ilustrasi' => 'nullable|string|max:255',
+            'url_ilustrasi' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        KpspPertanyaan::create($request->all());
+        // ambil data text dulu
+        $data = $request->only([
+            'id_set_kpsp',
+            'nomor_urut',
+            'teks_pertanyaan',
+            'domain_perkembangan',
+        ]);
+
+        // kalau ada file ilustrasi
+        if ($request->hasFile('url_ilustrasi')) {
+            $path = $request->file('url_ilustrasi')->store('ilustrasi', 'public');
+            $data['url_ilustrasi'] = $path;
+        }
+
+        KpspPertanyaan::create($data);
 
         return redirect()->route('kpsp-pertanyaan.index')->with('success', 'Pertanyaan berhasil ditambahkan');
     }
+
 
     public function edit(KpspPertanyaan $kpsp_pertanyaan)
     {
@@ -50,13 +65,27 @@ class KpspPertanyaanController extends Controller
             'teks_pertanyaan' => 'required|string',
             'nomor_urut' => 'required|integer',
             'domain_perkembangan' => 'nullable|string|max:50',
-            'url_ilustrasi' => 'nullable|string|max:255',
+            'url_ilustrasi' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $kpsp_pertanyaan->update($request->all());
+        $data = $request->only([
+            'id_set_kpsp',
+            'nomor_urut',
+            'teks_pertanyaan',
+            'domain_perkembangan',
+        ]);
+
+        // kalau ada file baru
+        if ($request->hasFile('url_ilustrasi')) {
+            $path = $request->file('url_ilustrasi')->store('ilustrasi', 'public');
+            $data['url_ilustrasi'] = $path;
+        }
+
+        $kpsp_pertanyaan->update($data);
 
         return redirect()->route('kpsp-pertanyaan.index')->with('success', 'Pertanyaan berhasil diperbarui');
     }
+
 
     public function destroy(KpspPertanyaan $kpsp_pertanyaan)
     {
