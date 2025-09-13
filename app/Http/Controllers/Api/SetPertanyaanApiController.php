@@ -58,12 +58,16 @@ class SetPertanyaanApiController extends Controller
             ->orderBy('nomor_urut')
             ->get()
             ->map(function ($p) {
+                // Perbaiki baris ini untuk membuat URL publik yang benar
+                $baseUrl = 'https://kpsp.himogi.my.id/';
+                $urlIlustrasi = $p->url_ilustrasi ? $baseUrl . 'storage/ilustrasi/' . $p->url_ilustrasi : null;
+
                 return [
                     'id' => $p->id,
                     'nomor_urut' => $p->nomor_urut,
                     'teks_pertanyaan' => $p->teks_pertanyaan,
                     'domain_perkembangan' => $p->domain_perkembangan,
-                    'url_ilustrasi' => $p->url_ilustrasi ? asset('storage/' . $p->url_ilustrasi) : null,
+                    'url_ilustrasi' => $urlIlustrasi, // Gunakan URL yang sudah diperbaiki
                 ];
             });
 
