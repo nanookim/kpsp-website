@@ -61,7 +61,7 @@ class SetPertanyaanApiController extends Controller
                 // Perbaiki baris ini untuk membuat URL publik yang benar
                 $baseUrl = 'https://kpsp.himogi.my.id/';
                 $urlIlustrasi = $p->url_ilustrasi
-                    ? $baseUrl . 'storage/ilustrasi/' . $p->url_ilustrasi
+                    ? $baseUrl . 'storage/' . $p->url_ilustrasi
                     : null;
 
                 return [
