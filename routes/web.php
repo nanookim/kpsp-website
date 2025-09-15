@@ -30,8 +30,8 @@ Route::resource('kpsp-pertanyaan', KpspPertanyaanController::class);
 Route::get('/kpsp', [KpspUserController::class, 'index'])->name('kpsp.index'); // pilih set
 Route::get('/kpsp/{id_set}', [KpspUserController::class, 'show'])->name('kpsp.show'); // tampil pertanyaan
 Route::post('/kpsp/{id_set}', [KpspUserController::class, 'store'])->name('kpsp.store'); // simpan jawaban
-Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
-Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
+//Route::get('forgot-password', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+//Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 Route::get('reset-password/{token}', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])->name('password.reset');
 Route::post('reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])->name('password.update');
