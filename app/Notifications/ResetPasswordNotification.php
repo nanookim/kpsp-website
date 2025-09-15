@@ -31,11 +31,12 @@ class ResetPasswordNotification extends Notification
 
         return (new MailMessage)
             ->subject('Reset Password Akun Anda')
-            ->markdown('emails.reset-password', [
+            ->view('emails.custom-reset', [
                 'url'   => $url,
                 'name'  => $notifiable->name,
             ]);
     }
+
 
 
 }
