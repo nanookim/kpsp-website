@@ -35,10 +35,11 @@ Route::post('/kpsp/{id_set}', [KpspUserController::class, 'store'])->name('kpsp.
 
 Route::get('/reset-password', function (\Illuminate\Http\Request $request) {
     return view('auth.passwords.reset', [
-        'token' => $request->token,
-        'email' => $request->email
+        'token' => $request->query('token'),
+        'email' => $request->query('email')
     ]);
 })->name('password.reset');
+
 
 
 
