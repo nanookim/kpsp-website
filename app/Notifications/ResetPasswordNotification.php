@@ -28,7 +28,7 @@ class ResetPasswordNotification extends Notification
     public function toMail($notifiable)
     {
         // URL API/Flutter untuk reset password
-        $url = config('app.frontend_url') . '/reset-password?token=' . $this->token . '&email=' . $this->email;
+        $url = config('kpsp.himogi.my.id') . '/reset-password?token=' . $this->token . '&email=' . $this->email;
 
         return (new MailMessage)
             ->subject('Reset Password Akun Anda')
