@@ -27,14 +27,15 @@ class ResetPasswordNotification extends Notification
 
     public function toMail($notifiable)
     {
-        // URL API/Flutter untuk reset password
-        $url = config('kpsp.himogi.my.id') . '/reset-password?token=' . $this->token . '&email=' . $this->email;
+        $url = config('app.url') . '/reset-password?token=' . $this->token . '&email=' . $this->email;
 
         return (new MailMessage)
             ->subject('Reset Password Akun Anda')
-            ->greeting('Halo ' . $notifiable->name . ',')
-            ->line('Anda menerima email ini karena ada permintaan reset password untuk akun Anda.')
-            ->action('Reset Password', $url)
-            ->line('Jika Anda tidak merasa meminta reset password, abaikan email ini.');
+            ->markdown('emails.reset-password', [
+                'url'   => $url,
+                'name'  => $notifiable->name,
+            ]);
     }
+
+
 }
