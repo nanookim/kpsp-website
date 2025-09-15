@@ -138,25 +138,34 @@ class UserController extends Controller
     public function forgot(Request $request)
     {
         $request->validate([
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
         ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
+        // cek manual
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Email tidak ditemukan dalam sistem kami.'
+            ], 404);
+        }
+
+        $status = Password::sendResetLink($request->only('email'));
 
         if ($status === Password::RESET_LINK_SENT) {
             return response()->json([
                 'success' => true,
-                'message' => 'Link reset password telah dikirim ke email Anda'
+                'message' => 'Link reset password telah dikirim ke email Anda.'
             ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Gagal mengirim link reset password'
-            ], 500);
         }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Gagal mengirim link reset password.'
+        ], 500);
     }
+
 
     // 🔹 Reset password menggunakan token
     public function reset(Request $request)
