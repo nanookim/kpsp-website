@@ -26,6 +26,7 @@ class UserController extends Controller
     // 🔹 Register user baru
     public function store(Request $request)
     {
+        $request->headers->set('Accept', 'application/json');
         $data = $request->validate([
             'username' => 'required|string|max:255',
             'email'    => 'required|email|unique:users,email',
