@@ -27,6 +27,7 @@ class ChildApiController extends Controller
             'name' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
+            'birth_history' => 'required|in:normal,premature',
         ]);
 
         $child = $request->user()->children()->create($data);
@@ -58,6 +59,7 @@ class ChildApiController extends Controller
             'name' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
+            'birth_history' => 'required|in:normal,premature',
         ]);
 
         $child->update($data);
