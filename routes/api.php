@@ -23,11 +23,12 @@ Route::apiResource('set-pertanyaan', SetPertanyaanApiController::class);
 Route::get('/set-pertanyaan/{id}/pertanyaan', [SetPertanyaanApiController::class, 'pertanyaan']);
 Route::post('/set-pertanyaan/{id_set}/jawaban', [SetPertanyaanApiController::class, 'submitJawaban']);
 Route::get('/set-pertanyaan/riwayat/{id_anak}', [SetPertanyaanApiController::class, 'riwayat']);
-Route::get('/reset-password', [ResetPasswordController::class, 'showResetForm'])
-    ->name('password.reset');
+// Forgot password (API)
 Route::post('/forgot-password', [UserController::class, 'forgot']);
-Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
-    ->name('password.update');
+
+// Reset password (API)
+Route::post('/reset-password', [UserController::class, 'reset']);
+
 
 
 
