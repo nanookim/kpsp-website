@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ChildApiController;
 use App\Http\Controllers\Api\SetPertanyaanApiController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 
 Route::get('/ping', fn () => response()->json(['message' => 'API OK']));
 
@@ -22,13 +23,11 @@ Route::apiResource('set-pertanyaan', SetPertanyaanApiController::class);
 Route::get('/set-pertanyaan/{id}/pertanyaan', [SetPertanyaanApiController::class, 'pertanyaan']);
 Route::post('/set-pertanyaan/{id_set}/jawaban', [SetPertanyaanApiController::class, 'submitJawaban']);
 Route::get('/set-pertanyaan/riwayat/{id_anak}', [SetPertanyaanApiController::class, 'riwayat']);
-Route::post('/forgot-password', [UserController::class, 'forgot']);
-Route::get('/reset-password/{token}', function ($token) {
-    return response()->json([
-        'token' => $token,
-        'message' => 'Silakan pakai token ini di aplikasi mobile'
-    ]);
-})->name('password.reset');
+Route::get('/reset-password', [ResetPasswordController::class, 'showResetForm'])
+    ->name('password.reset');
+
+Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
+    ->name('password.update');
 
 
 
