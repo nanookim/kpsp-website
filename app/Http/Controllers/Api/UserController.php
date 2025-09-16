@@ -135,68 +135,37 @@ class UserController extends Controller
         ]);
     }
 
-    public function forgot(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-        ]);
-
-        // cek manual
-        $user = User::where('email', $request->email)->first();
-
-        if (!$user) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Email tidak ditemukan dalam sistem kami.'
-            ], 404);
-        }
-
-        $status = Password::sendResetLink($request->only('email'));
-
-        if ($status === Password::RESET_LINK_SENT) {
-            return response()->json([
-                'success' => true,
-                'message' => 'Link reset password telah dikirim ke email Anda.'
-            ]);
-        }
-
-        return response()->json([
-            'success' => false,
-            'message' => 'Gagal mengirim link reset password.'
-        ], 500);
-    }
-
-
-    // 🔹 Reset password menggunakan token
     public function reset(Request $request)
     {
+        // Validasi input
         $request->validate([
             'token' => 'required|string',
-            'email' => 'required|email|exists:users,email',
-            'password' => 'required|string|min:8|confirmed', // password_confirmation wajib
+            'email' => 'required|email',
+            'password' => 'required|string|min:8|confirmed', // gunakan password_confirmation
         ]);
 
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function ($user, $password) {
-                $user->password = Hash::make($password);
-                $user->setRememberToken(Str::random(60));
-                $user->save();
+            function (User $user, string $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
 
                 event(new PasswordReset($user));
             }
         );
 
-        if ($status == Password::PASSWORD_RESET) {
+        if ($status === Password::PASSWORD_RESET) {
             return response()->json([
                 'success' => true,
-                'message' => 'Password berhasil direset'
+                'message' => 'Password berhasil direset.'
             ]);
-        } else {
-            return response()->json([
-                'success' => false,
-                'message' => 'Token reset password tidak valid atau sudah kedaluwarsa'
-            ], 400);
         }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Token reset password tidak valid atau telah kadaluarsa.'
+        ], 400);
     }
 }
