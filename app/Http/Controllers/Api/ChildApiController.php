@@ -28,6 +28,7 @@ class ChildApiController extends Controller
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
             'birth_history' => 'required|in:normal,premature',
+            'gestational_age' => 'nullable|integer|min:20|max:45', // opsional, validasi tambahan
         ]);
 
         $child = $request->user()->children()->create($data);
@@ -60,6 +61,7 @@ class ChildApiController extends Controller
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
             'birth_history' => 'required|in:normal,premature',
+            'gestational_age' => 'nullable|integer|min:20|max:45', // opsional, validasi tambahan
         ]);
 
         $child->update($data);

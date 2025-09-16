@@ -14,10 +14,12 @@ class Child extends Model
         'gender',
         'date_of_birth',
         'birth_history', // ✅ tambahkan ini'
+        'gestational_age',
     ];
 
     protected $casts = [
         'date_of_birth' => 'date',
+        'gestational_age' => 'integer',
     ];
 
     // Relasi ke User

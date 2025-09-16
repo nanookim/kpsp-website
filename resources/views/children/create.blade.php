@@ -47,6 +47,24 @@
                     @error('date_of_birth') <div class="invalid-feedback">{{ $message }}</div> @enderror
                 </div>
 
+                <div class="col-md-6">
+                    <label class="form-label">Umur Kehamilan (minggu)</label>
+                    <input type="number" name="gestational_age" value="{{ old('gestational_age') }}"
+                           class="form-control @error('gestational_age') is-invalid @enderror" min="0" required>
+                    @error('gestational_age') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
+                <!-- Field untuk birth history -->
+                <div class="col-md-6">
+                    <label class="form-label">Riwayat Kelahiran</label>
+                    <select name="birth_history" class="form-select @error('birth_history') is-invalid @enderror" required>
+                        <option value="">-- Pilih Riwayat --</option>
+                        <option value="normal" {{ old('birth_history')=='normal' ? 'selected' : '' }}>Normal</option>
+                        <option value="premature" {{ old('birth_history')=='premature' ? 'selected' : '' }}>Premature</option>
+                    </select>
+                    @error('birth_history') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                </div>
+
                 <div class="col-12 d-flex justify-content-end gap-2">
                     <a href="{{ route('children.index') }}" class="btn btn-outline-secondary">
                         Kembali

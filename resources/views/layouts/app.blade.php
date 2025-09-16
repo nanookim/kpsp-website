@@ -35,18 +35,50 @@
 <body>
 <div class="sidebar">
     <h4 class="p-3">KPSP Admin</h4>
-    <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">👤 Users</a>
-    <a href="{{ route('children.index') }}" class="{{ request()->is('children*') ? 'active' : '' }}">👶 Children</a>
-    <a href="{{ route('kpsp-set.index') }}" class="{{ request()->is('kpsp-set*') ? 'active' : '' }}">📂 Set Pertanyaan</a>
-    <a href="{{ route('kpsp-pertanyaan.index') }}" class="{{ request()->is('kpsp-pertanyaan*') ? 'active' : '' }}">❓ Pertanyaan</a>
-    <a href="{{ route('kpsp-skrining.index') }}" class="{{ request()->is('kpsp-skrining*') ? 'active' : '' }}">🩺 Skrining</a>
-    <a href="{{ route('kpsp-jawaban.index') }}" class="{{ request()->is('kpsp-jawaban*') ? 'active' : '' }}">✅ Jawaban</a>
 
-        <a href="{{ route('kpsp.index') }}"
-           class="nav-link {{ request()->routeIs('kpsp.*') ? 'active' : '' }}">
-            <i class="bi bi-question-circle"></i> KPSP
-        </a>
+    {{-- Users --}}
+    <a href="{{ route('users.index') }}"
+       class="{{ request()->is('users*') ? 'active' : '' }}">
+        👤 Users
+    </a>
+
+    {{-- Children --}}
+    <a href="{{ route('children.index') }}"
+       class="{{ request()->is('children*') ? 'active' : '' }}">
+        👶 Children
+    </a>
+
+    {{-- KPSP Set Pertanyaan --}}
+    <a href="{{ route('kpsp-set.index') }}"
+       class="{{ request()->is('kpsp-set*') ? 'active' : '' }}">
+        📂 Set Pertanyaan
+    </a>
+
+    {{-- KPSP Pertanyaan --}}
+    <a href="{{ route('kpsp-pertanyaan.index') }}"
+       class="{{ request()->is('kpsp-pertanyaan*') ? 'active' : '' }}">
+        ❓ Pertanyaan
+    </a>
+
+    {{-- KPSP Skrining --}}
+    <a href="{{ route('kpsp-skrining.index') }}"
+       class="{{ request()->is('kpsp-skrining*') ? 'active' : '' }}">
+        🩺 Skrining
+    </a>
+
+    {{-- KPSP Jawaban --}}
+    <a href="{{ route('kpsp-jawaban.index') }}"
+       class="{{ request()->is('kpsp-jawaban*') ? 'active' : '' }}">
+        ✅ Jawaban
+    </a>
+
+    {{-- KPSP User --}}
+    <a href="{{ route('kpsp.index') }}"
+       class="{{ request()->routeIs('kpsp.*') ? 'active' : '' }}">
+        📝 KPSP
+    </a>
 </div>
+
 
 
 <div class="content">

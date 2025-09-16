@@ -10,11 +10,19 @@ class ChildController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->ajax()) {
+            $children = Child::with('user')->latest()->get();
+            return datatables()->of($children)
+                ->addIndexColumn()
+                ->make(true);
+        }
+
         $children = Child::with('user')->latest()->paginate(10);
         return view('children.index', compact('children'));
     }
+
 
     /**
      * Show the form for creating a new resource.
