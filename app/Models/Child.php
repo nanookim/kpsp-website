@@ -13,6 +13,7 @@ class Child extends Model
         'name',
         'gender',
         'date_of_birth',
+        'birth_history', // ✅ tambahkan ini'
     ];
 
     protected $casts = [
