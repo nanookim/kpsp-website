@@ -25,7 +25,7 @@ Route::post('/set-pertanyaan/{id_set}/jawaban', [SetPertanyaanApiController::cla
 Route::get('/set-pertanyaan/riwayat/{id_anak}', [SetPertanyaanApiController::class, 'riwayat']);
 Route::get('/reset-password', [ResetPasswordController::class, 'showResetForm'])
     ->name('password.reset');
-
+Route::post('/forgot-password', [UserController::class, 'forgot']);
 Route::post('/reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
 
