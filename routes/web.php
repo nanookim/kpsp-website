@@ -8,6 +8,7 @@ use App\Http\Controllers\KpspSkriningController;
 use App\Http\Controllers\KpspJawabanController;
 use App\Http\Controllers\ChildController;
 use App\Http\Controllers\KpspUserController;
+use App\Http\Controllers\Auth\ResetPasswordController;
 Route::get('/', function () {
     return view('welcome');
 });
@@ -34,11 +35,10 @@ Route::post('/kpsp/{id_set}', [KpspUserController::class, 'store'])->name('kpsp.
 //Route::post('forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('password.email');
 
 // Menampilkan form reset password (WEB)
-Route::get('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'showResetForm'])
+Route::get('reset-password/{token}', [ResetPasswordController::class, 'showResetForm'])
     ->name('password.reset');
 
-// Submit password baru (WEB)
-Route::post('/reset-password', [\App\Http\Controllers\Auth\ResetPasswordController::class, 'reset'])
+Route::post('reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
 
 

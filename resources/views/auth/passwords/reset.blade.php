@@ -6,11 +6,14 @@
 
         <form method="POST" action="{{ route('password.update') }}">
             @csrf
+
             <input type="hidden" name="token" value="{{ $token }}">
 
             <div>
                 <label>Email</label>
-                <input type="email" name="email" value="{{ $email ?? old('email') }}" required autofocus>
+                <input type="email" name="email"
+                       value="{{ old('email', $email ?? '') }}"
+                       required autofocus>
             </div>
 
             <div>
