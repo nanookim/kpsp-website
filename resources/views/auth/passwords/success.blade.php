@@ -1,10 +1,24 @@
-@extends('layouts.app')
+@extends('layouts.auth')
+
+@section('title', 'Password Berhasil Diperbarui')
 
 @section('content')
-    <div class="container text-center" style="margin-top:100px;">
-        <h2 style="color: green;">✅ Password Berhasil Diperbarui</h2>
-        <p>Kata sandi akun Anda telah berhasil diubah.</p>
+    <div class="text-center">
+        {{-- Ikon ilustrasi sukses --}}
+        <div class="mb-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 rounded-circle"
+                 style="width: 100px; height: 100px;">
+                <span style="font-size: 50px;">✅</span>
+            </div>
+        </div>
 
-        <a href="{{ url('/') }}" class="btn btn-primary mt-3">Kembali ke Halaman Utama</a>
+        {{-- Judul --}}
+        <h2 class="fw-bold text-success mb-3">Password Berhasil Diperbarui</h2>
+
+        {{-- Pesan --}}
+        <p class="text-muted fs-6">
+            Kata sandi akun Anda sudah diganti dengan yang baru.<br>
+            Silakan gunakan password baru Anda untuk login berikutnya.
+        </p>
     </div>
 @endsection

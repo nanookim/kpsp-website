@@ -40,6 +40,5 @@ Route::get('reset-password', [ResetPasswordController::class, 'showResetForm'])
 // Submit reset password (POST, dari form)
 Route::post('reset-password', [ResetPasswordController::class, 'reset'])
     ->name('password.update');
-Route::view('/password-success', 'auth.passwords.success')->name('password.success');
-
-
+Route::view('/password-success', 'auth.passwords.success')
+    ->name('password.success');
