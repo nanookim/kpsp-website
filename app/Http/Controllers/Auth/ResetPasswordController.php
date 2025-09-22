@@ -11,13 +11,14 @@ use Illuminate\Support\Str;
 
 class ResetPasswordController extends Controller
 {
-    public function showResetForm(Request $request, $token = null)
+    public function showResetForm(Request $request)
     {
         return view('auth.passwords.reset', [
-            'token' => $token,
-            'email' => $request->email,
+            'token' => $request->query('token'),
+            'email' => $request->query('email'),
         ]);
     }
+
 
     public function reset(Request $request)
     {
