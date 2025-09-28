@@ -333,7 +333,7 @@ class SetPertanyaanApiController extends Controller
 
     public function getJawaban($id_set, Request $request) {
         $id_anak = $request->query('id_anak');
-        $skrining = KpspSkrining::where('id_set_kpsp', $id_set)
+        $skrining = \App\Models\KpspSkrining::where('id_set_kpsp', $id_set)
             ->where('id_anak', $id_anak)
             ->latest('tanggal_skrining')
             ->with('jawaban.pertanyaan')
@@ -358,5 +358,6 @@ class SetPertanyaanApiController extends Controller
             'data' => $jawaban,
         ]);
     }
+
 
 }
