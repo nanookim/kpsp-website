@@ -302,7 +302,16 @@ class SetPertanyaanApiController extends Controller
                     'sosialisasi_kemandirian' => 0,
                 ];
 
+                // 🔥 Tambahkan jawaban detail
+                $jawabanList = []; // ✅ diubah
                 foreach ($s->jawaban as $j) {
+                    if ($j->pertanyaan) {
+                        $jawabanList[] = [ // ✅ diubah
+                            'id_pertanyaan' => $j->id_pertanyaan,
+                            'jawaban' => $j->jawaban,
+                        ];
+                    }
+
                     if ($j->jawaban === 'tidak' && $j->pertanyaan) {
                         $domain = $j->pertanyaan->domain_perkembangan;
                         if (array_key_exists($domain, $detailTidak)) {
@@ -315,12 +324,13 @@ class SetPertanyaanApiController extends Controller
 
                 return [
                     'id' => $s->id,
-                    'tanggal_skrining'   => $s->tanggal_skrining,   // ✅ konsisten
+                    'tanggal_skrining'   => $s->tanggal_skrining,
                     'usia_set'           => $s->set->usia_dalam_bulan ?? null,
                     'deskripsi_set'      => $s->set->deskripsi ?? null,
-                    'skor_mentah'        => $s->skor_mentah,        // ✅ konsisten
-                    'hasil_interpretasi' => $s->hasil_interpretasi, // ✅ konsisten
+                    'skor_mentah'        => $s->skor_mentah,
+                    'hasil_interpretasi' => $s->hasil_interpretasi,
                     'kesimpulan'         => $kesimpulan,
+                    'jawaban'            => $jawabanList, // ✅ diubah
                 ];
             });
 
@@ -330,6 +340,7 @@ class SetPertanyaanApiController extends Controller
             'data' => $skrining,
         ]);
     }
+
 
     public function getJawaban($id_set, Request $request) {
         $id_anak = $request->query('id_anak');
