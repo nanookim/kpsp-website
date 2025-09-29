@@ -324,6 +324,7 @@ class SetPertanyaanApiController extends Controller
 
                 return [
                     'id' => $s->id,
+                    'id_set_kpsp'        => $s->id_set_kpsp,
                     'tanggal_skrining'   => $s->tanggal_skrining,
                     'usia_set'           => $s->set->usia_dalam_bulan ?? null,
                     'deskripsi_set'      => $s->set->deskripsi ?? null,
