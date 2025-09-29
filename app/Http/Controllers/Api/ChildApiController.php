@@ -27,7 +27,7 @@ class ChildApiController extends Controller
             'name' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
-            'birth_history' => 'required|in:normal,premature',
+            'birth_history' => 'required|in:normal,cukup umur,premature',
             'gestational_age' => 'nullable|integer|min:20|max:45', // opsional, validasi tambahan
         ]);
 
@@ -60,7 +60,7 @@ class ChildApiController extends Controller
             'name' => 'required|string|max:255',
             'gender' => 'required|in:male,female',
             'date_of_birth' => 'required|date',
-            'birth_history' => 'required|in:normal,premature',
+            'birth_history' => 'required|in:normal,cukup umur,premature',
             'gestational_age' => 'nullable|integer|min:20|max:45', // opsional, validasi tambahan
         ]);
 
