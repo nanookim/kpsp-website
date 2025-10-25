@@ -157,7 +157,7 @@
 
 <!-- HEADER -->
 <header>
-    <h1>Dashboard Admin - KPSP</h1>
+    <h1>Dashboard Admin - DDTKA</h1>
     <nav>
         <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">Users</a>
         <a href="{{ route('anak.index') }}" class="{{ request()->is('anak*') ? 'active' : '' }}">Children</a>
