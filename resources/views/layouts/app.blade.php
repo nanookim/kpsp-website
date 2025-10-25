@@ -43,9 +43,13 @@
     </a>
 
     {{-- Children --}}
-    <a href="{{ route('children.index') }}"
-       class="{{ request()->is('children*') ? 'active' : '' }}">
-        👶 Children
+{{--    <a href="{{ route('children.index') }}"--}}
+{{--       class="{{ request()->is('children*') ? 'active' : '' }}">--}}
+{{--        👶 Children--}}
+{{--    </a>--}}
+    <a href="{{ route('anak.index') }}"
+       class="{{ request()->is('anak*') ? 'active' : '' }}">
+        👶 Anak
     </a>
 
     {{-- KPSP Set Pertanyaan --}}

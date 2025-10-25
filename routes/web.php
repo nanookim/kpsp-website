@@ -13,7 +13,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 Route::resource('users', UserController::class);
-Route::resource('children', ChildController::class);
+Route::resource('anak', ChildController::class);
 Route::resource('kpsp-set', KpspSetPertanyaanController::class);
 
 Route::resource('kpsp-skrining', KpspSkriningController::class);

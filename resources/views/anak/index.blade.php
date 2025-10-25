@@ -4,7 +4,7 @@
     <div class="card shadow-sm">
         <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
             <h5 class="mb-0">Daftar Anak</h5>
-            <a href="{{ route('children.create') }}" class="btn btn-light btn-sm">+ Tambah Anak</a>
+            <a href="{{ route('anak.create') }}" class="btn btn-light btn-sm">+ Tambah Anak</a>
         </div>
         <div class="card-body">
             @if(session('success'))
@@ -36,9 +36,9 @@
                             </td>
                             <td>{{ $child->date_of_birth->format('d M Y') }}</td>
                             <td>
-                                <a href="{{ route('children.show',$child->id) }}" class="btn btn-info btn-sm">Detail</a>
-                                <a href="{{ route('children.edit',$child->id) }}" class="btn btn-warning btn-sm">Edit</a>
-                                <form action="{{ route('children.destroy',$child->id) }}" method="POST" style="display:inline;">
+                                <a href="{{ route('anak.show',$child->id) }}" class="btn btn-info btn-sm">Detail</a>
+                                <a href="{{ route('anak.edit',$child->id) }}" class="btn btn-warning btn-sm">Edit</a>
+                                <form action="{{ route('anak.destroy',$child->id) }}" method="POST" style="display:inline;">
                                     @csrf @method('DELETE')
                                     <button onclick="return confirm('Yakin hapus?')" class="btn btn-danger btn-sm">Hapus</button>
                                 </form>

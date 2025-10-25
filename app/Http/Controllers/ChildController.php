@@ -20,7 +20,7 @@ class ChildController extends Controller
         }
 
         $children = Child::with('user')->latest()->paginate(10);
-        return view('children.index', compact('children'));
+        return view('anak.index', compact('children'));
     }
 
 
@@ -30,7 +30,7 @@ class ChildController extends Controller
     public function create()
     {
         $users = User::all();
-        return view('children.create', compact('users'));
+        return view('anak.create', compact('users'));
     }
 
     /**
@@ -46,7 +46,7 @@ class ChildController extends Controller
         ]);
 
         Child::create($request->all());
-        return redirect()->route('children.index')->with('success', 'Data anak berhasil ditambahkan.');
+        return redirect()->route('anak.index')->with('success', 'Data anak berhasil ditambahkan.');
     }
 
     /**
@@ -54,7 +54,7 @@ class ChildController extends Controller
      */
     public function show(Child $child)
     {
-        return view('children.show', compact('child'));
+        return view('anak.show', compact('child'));
     }
 
     /**
@@ -63,7 +63,7 @@ class ChildController extends Controller
     public function edit(Child $child)
     {
         $users = User::all();
-        return view('children.edit', compact('child', 'users'));
+        return view('anak.edit', compact('child', 'users'));
     }
 
     public function update(Request $request, Child $child)
@@ -76,12 +76,12 @@ class ChildController extends Controller
         ]);
 
         $child->update($request->all());
-        return redirect()->route('children.index')->with('success', 'Data anak berhasil diperbarui.');
+        return redirect()->route('anak.index')->with('success', 'Data anak berhasil diperbarui.');
     }
 
     public function destroy(Child $child)
     {
         $child->delete();
-        return redirect()->route('children.index')->with('success', 'Data anak berhasil dihapus.');
+        return redirect()->route('anak.index')->with('success', 'Data anak berhasil dihapus.');
     }
 }
