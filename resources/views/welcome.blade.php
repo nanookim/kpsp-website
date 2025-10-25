@@ -160,7 +160,7 @@
     <h1>Dashboard Admin - KPSP</h1>
     <nav>
         <a href="{{ route('users.index') }}" class="{{ request()->is('users*') ? 'active' : '' }}">Users</a>
-        <a href="{{ route('children.index') }}" class="{{ request()->is('children*') ? 'active' : '' }}">Children</a>
+        <a href="{{ route('anak.index') }}" class="{{ request()->is('anak*') ? 'active' : '' }}">Children</a>
         <a href="{{ route('kpsp-set.index') }}" class="{{ request()->is('kpsp-set*') ? 'active' : '' }}">Set Pertanyaan</a>
         <a href="{{ route('kpsp-pertanyaan.index') }}" class="{{ request()->is('kpsp-pertanyaan*') ? 'active' : '' }}">Pertanyaan</a>
         <a href="{{ route('kpsp-skrining.index') }}" class="{{ request()->is('kpsp-skrining*') ? 'active' : '' }}">Skrining</a>
@@ -179,7 +179,7 @@
             <strong>Users</strong>
             <small>Manajemen akun pengguna</small>
         </a>
-        <a href="{{ route('children.index') }}" class="menu-item">
+        <a href="{{ route('anak.index') }}" class="menu-item">
             <strong>Children</strong>
             <small>Data anak dan perkembangannya</small>
         </a>
